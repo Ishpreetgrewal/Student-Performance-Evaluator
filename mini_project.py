@@ -4,7 +4,6 @@ import csv
 import os
 
 
-# ---------- Login ----------
 def login():
     print("\nLogin Required")
     username = input("Username: ")
@@ -12,7 +11,6 @@ def login():
     return username == "admin" and password == "admin123"
 
 
-# ---------- Student ----------
 class Student:
     def __init__(self, roll_no, name, english, maths, science, present):
         self.roll_no = roll_no
@@ -30,7 +28,6 @@ class Student:
         return round(np.mean(list(self.marks.values())), 2)
 
 
-# ---------- Evaluation ----------
 class EvaluatedStudent(Student):
 
     def grade(self):
@@ -58,7 +55,6 @@ class EvaluatedStudent(Student):
         return "Good Performance"
 
 
-# ---------- Analyzer ----------
 class PerformanceAnalyzer:
 
     def __init__(self):
@@ -67,8 +63,9 @@ class PerformanceAnalyzer:
 
     def add_student(self, student):
         self.students.append(student)
+        self.save_records()   # ✅ Auto save after adding
 
-    # ---------- Save JSON ----------
+   
     def save_records(self, filename="students.json"):
         data = []
         for s in self.students:
@@ -82,7 +79,6 @@ class PerformanceAnalyzer:
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
-    # ---------- Load JSON ----------
     def load_records(self, filename="students.json"):
         if not os.path.exists(filename):
             return
@@ -101,7 +97,6 @@ class PerformanceAnalyzer:
             )
             self.students.append(s)
 
-    # ---------- Export CSV ----------
     def export_report(self, filename="student_report.csv"):
         with open(filename, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
@@ -123,7 +118,6 @@ class PerformanceAnalyzer:
                     s.status()
                 ])
 
-    # ---------- Display Table ----------
     def show_table(self):
         if not self.students:
             print("No records available.")
@@ -146,8 +140,6 @@ class PerformanceAnalyzer:
 
         print("-" * 110)
 
-
-# ---------- Program ----------
 def run_program():
 
     if not login():
@@ -160,9 +152,8 @@ def run_program():
         print("\n===== MENU =====")
         print("1 Add Student")
         print("2 Show Records")
-        print("3 Save Records")
-        print("4 Export Report (Excel CSV)")
-        print("5 Exit")
+        print("3 Export Report (Excel CSV)")
+        print("4 Exit")
 
         choice = input("Choice: ")
 
@@ -184,8 +175,8 @@ def run_program():
                     roll, name, english, maths, science, present
                 )
 
-                analyzer.add_student(student)
-                print("Record added successfully!")
+                analyzer.add_student(student)  # auto saves
+                print("Record added and saved permanently!")
 
             except ValueError:
                 print("Invalid input!")
@@ -194,14 +185,10 @@ def run_program():
             analyzer.show_table()
 
         elif choice == "3":
-            analyzer.save_records()
-            print("Records saved permanently.")
-
-        elif choice == "4":
             analyzer.export_report()
             print("Report exported as CSV file.")
 
-        elif choice == "5":
+        elif choice == "4":
             print("Program closed.")
             break
 
